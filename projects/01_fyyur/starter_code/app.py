@@ -353,13 +353,37 @@ def create_venue_form():
     return render_template('forms/new_venue.html', form=form)
 
 
+"""
+https://knowledge.udacity.com/questions/130507
+"""
+
+
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
     # TODO: insert form data as a new Venue record in the db, instead
     # TODO: modify data to be the data object returned from db insertion
 
+    new_venue = Venue()
+
+    new_venue.name = request.form['name']
+    new_venue.city = request.form['city']
+    new_venue.state = request.form['state']
+    new_venue.address = request.form['address']
+    new_venue.phone = request.form['phone']
+    new_venue.genres = request.form.getlist('genres')
+    new_venue.facebook_link = request.form['facebook_link']
+
+    try:
+        db.session.add(new_venue)
+        db.session.commit()
+
+        flash('Venue ' + request.form['name'] + ' was successfully listed!')
+    except:
+        flash('An error occurred. Venue ' + new_venue.name + ' could not be listed.')
+
+        db.session.rollback()
     # on successful db insert, flash success
-    flash('Venue ' + request.form['name'] + ' was successfully listed!')
+
     # TODO: on unsuccessful db insert, flash an error instead.
     # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
     # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
