@@ -290,7 +290,57 @@ def show_venue(venue_id):
         "past_shows_count": 1,
         "upcoming_shows_count": 1,
     }
-    data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
+
+    venue_list = []
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    venue_query = Venue.query.group_by(Venue.id, Venue.state, Venue.city).all()
+
+    for venue in venue_query:
+        upcoming_shows = venue.show.filter(Show.start_time > current_time).all()
+        past_shows = venue.show.filter(Show.start_time <= current_time).all()
+
+        upcoming_shows_list = []
+        past_shows_list = []
+
+        if len(upcoming_shows) > 0:
+            for show in upcoming_shows:
+                upcoming_shows_list.append({
+                    "artist_id": show.artist_id,
+                    "artist_name": Artist.query.filter(Artist.id == show.artist_id).first().name,
+                    "artist_image_link": Artist.query.filter(Artist.id == show.artist_id).first().image_link,
+                    "start_time": str(show.start_time)
+                })
+
+        if len(past_shows) > 0:
+            for show in past_shows:
+                past_shows_list.append({
+                    "artist_id": show.artist_id,
+                    "artist_name": Artist.query.filter(Artist.id == show.artist_id).first().name,
+                    "artist_image_link": Artist.query.filter(Artist.id == show.artist_id).first().image_link,
+                    "start_time": str(show.start_time)
+                })
+
+        venue_list.append({
+            "id": venue.id,
+            "name": venue.name,
+            "genres": venue.genres,
+            "address": venue.address,
+            "city": venue.city,
+            "state": venue.state,
+            "phone": venue.phone,
+            "website": venue.website,
+            "facebook_link": venue.facebook_link,
+            "seeking_talent": venue.seeking_talent,
+            "seeking_description": venue.seeking_description,
+            "image_link": venue.image_link,
+            "past_shows": past_shows_list,
+            "upcoming_shows": upcoming_shows_list,
+            "past_shows_count": len(past_shows),
+            "upcoming_shows_count": len(upcoming_shows)
+        })
+
+    # data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
+    data = list(filter(lambda d: d['id'] == venue_id, venue_list))[0]
     return render_template('pages/show_venue.html', venue=data)
 
 
