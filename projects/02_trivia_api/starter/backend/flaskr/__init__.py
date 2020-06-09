@@ -55,9 +55,13 @@ def create_app(test_config=None):
 
         categories = [categories.format() for categories in selection]
 
+        category_list = []
+        for cat in categories:
+            category_list.append(cat['type'])
+
         return jsonify({
             'success': True,
-            'categories': categories
+            'categories': category_list
         })
 
     '''
@@ -136,8 +140,8 @@ def create_app(test_config=None):
     of the questions list in the "List" tab.  
     '''
 
-    @app.route('/create', methods=['POST'])
-    def create_question():
+    @app.route('/questions/add', methods=['POST'])
+    def add_question():
         body = request.get_json()
 
         new_answer = body.get('answer', None)
