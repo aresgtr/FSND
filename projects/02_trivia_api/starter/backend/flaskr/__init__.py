@@ -136,7 +136,7 @@ def create_app(test_config=None):
     of the questions list in the "List" tab.  
     '''
 
-    @app.route('/questions', methods=['POST'])
+    @app.route('/create', methods=['POST'])
     def create_question():
         body = request.get_json()
 
@@ -172,7 +172,7 @@ def create_app(test_config=None):
     Try using the word "title" to start. 
     '''
 
-    @app.route('/search', methods=['POST'])
+    @app.route('/questions', methods=['POST'])
     def search_question():
         body = request.get_json()
 
@@ -185,7 +185,7 @@ def create_app(test_config=None):
         search_result = []
 
         for question in selection:
-            if search_term.lower() in question.question.lower():
+            if search_term.lower() in str(question.question).lower():
                 search_result.append({
                     "answer": question.answer,
                     "category": question.category,
@@ -197,7 +197,8 @@ def create_app(test_config=None):
         return jsonify({
             'success': True,
             'questions': search_result,
-            'total_questions': len(search_result)
+            'total_questions': len(search_result),
+            'current_category': ''
         })
 
     '''
