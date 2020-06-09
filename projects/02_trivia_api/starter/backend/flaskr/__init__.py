@@ -242,24 +242,26 @@ def create_app(test_config=None):
     and shown whether they were correct or not. 
     '''
 
-    @app.route('/play', methods=['POST'])
+    @app.route('/quizzes', methods=['POST'])
     def play_quiz():
         body = request.get_json()
 
-        category = body.get('category', None)
-        prev_questions = body.get('prev_questions', None)
+        category_string = body.get('quiz_category', None)['type']
+        category = None
+
+        if category_string != 'click':  # Click for all categories
+            category = Category.query.filter(Category.type == category_string).one_or_none().id
+
+        prev_questions = body.get('previous_questions', [])
 
         if category is None:
             questions = Question.query.all()
         else:
             questions = Question.query.filter(Question.category == category).all()
 
-        if prev_questions is None:
-            abort(404)
-
         question_id_stack = []
         for question in questions:
-            if (str(question.id) in prev_questions) or (int(question.id) in prev_questions):
+            if int(question.id) in prev_questions:
                 pass
             else:
                 question_id_stack.append(int(question.id))
@@ -267,7 +269,7 @@ def create_app(test_config=None):
         if len(question_id_stack) == 0:
             return jsonify({
                 'success': True,
-                'question': {}
+                'question': None
             })
 
         else:
