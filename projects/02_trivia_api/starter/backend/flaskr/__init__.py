@@ -81,10 +81,18 @@ def create_app(test_config=None):
         if len(current_questions) <= 0:
             abort(404)
 
+        # https://knowledge.udacity.com/questions/160035
+        categories = Category.query.all()
+        dict = {}
+        for category in categories:
+            dict[category.id] = category.type
+
         return jsonify({
             'success': True,
             'questions': current_questions,
-            'total_questions': len(Question.query.all())
+            'total_questions': len(Question.query.all()),
+            'categories': dict,
+            'current_category': ''
         })
 
     '''
@@ -201,7 +209,7 @@ def create_app(test_config=None):
     category to be shown. 
     '''
 
-    @app.route('/categories/<int:category>')
+    @app.route('/categories/<int:category>/questions')
     def display_questions_by_category(category):
         questions = Question.query.filter(Question.category == category).all()
 
@@ -214,7 +222,7 @@ def create_app(test_config=None):
             'success': True,
             'questions': questions,
             'total_questions': len(questions),
-            'category': category
+            'current_category': category
         })
 
     '''
