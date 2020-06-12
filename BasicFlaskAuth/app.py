@@ -58,12 +58,6 @@ def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
 
-    # # https://knowledge.udacity.com/questions/61671
-    # myurl = 'https://%s/.well-known/jwks.json' % (AUTH0_DOMAIN)
-    # jsonurl = urlopen(myurl)
-    # content = jsonurl.read().decode(jsonurl.headers.get_content_charset())
-    # jwks = json.loads(content)
-
     unverified_header = jwt.get_unverified_header(token)
     rsa_key = {}
     if 'kid' not in unverified_header:
