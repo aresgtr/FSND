@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="database" uuid="8f9c9dd2-1a81-4ab5-a0aa-d1b2d90909f7">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Hasee\Desktop\Github\FSND\projects\03_coffee_shop_full_stack\starter_code\backend\src\database\database.db</jdbc-url>
+    </data-source>
+  </component>
+</project>
